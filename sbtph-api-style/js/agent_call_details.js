@@ -51,6 +51,94 @@ function agentCallDetailsTable(res,tbody) {
     var tdcallrecording = document.createElement('td');
     var linkrecording = document.createElement('a');
     var tdgetdate = document.createElement('td');
+    var btncomment = document.createElement('button');
+
+
+    //Creating Modal Form
+          
+        var parentModal = document.createElement('div');
+        document.getElementById('main').appendChild(parentModal);
+        parentModal.id =  "myModal" + i;
+        parentModal.className = "modal";
+        var modalDialog = document.createElement('div');
+        modalDialog.className = "modal-dialog";
+        parentModal.appendChild(modalDialog);
+
+        var modalContent = document.createElement('div');
+        modalContent.className = "modal-content";
+        modalDialog.appendChild(modalContent);
+
+        var modalHeader = document.createElement('div');
+        modalHeader.className = "modal-header";
+        var modalTitle = document.createElement('h4');
+        modalTitle.className = "modal-title";
+        modalTitle.textContent = "YOUR COMMENT";
+        var modalBtn = document.createElement('button');
+        modalBtn.className= "close";
+        modalBtn.dataset.dismiss = "modal";
+        // modalBtn.textContent = "&times;";
+        modalHeader.appendChild(modalTitle);
+        modalHeader.appendChild(modalBtn);
+        modalContent.appendChild(modalHeader);
+
+
+        var modalBody = document.createElement('div');
+        modalBody.className = "modal-body";
+        var textAreaBody = document.createElement('textarea');
+        textAreaBody.id = i + "message";
+        textAreaBody.cols = "62";
+        textAreaBody.placeholder = "Put Your Comment Here."
+        textAreaBody.textContent = response[i].comment;
+        //textAreaBody.textContent = response[i].extension + " Channel is Currently Active";
+        modalBody.appendChild(textAreaBody)
+        modalContent.appendChild(modalBody);
+
+        var modalFooter = document.createElement('div');
+        modalFooter.id = response[i].extension + "modalfooter";
+        modalFooter.className = "modal-footer";
+
+        var updateBtn = document.createElement('button');
+        updateBtn.id = i ;
+        updateBtn.className = "btn btn-primary";
+
+       
+       // listenBtn.dataset.dismiss = "modal";
+        updateBtn.textContent = "Update";
+        updateBtn.addEventListener('click', function(e){
+           var id = e.path[0].id
+            var getExistingComment = document.getElementById(id + "message")
+
+           var data = {};
+            data.startimestamp = response[id].startimestamp;
+            data.getdate = response[id].getDate
+           data.whoansweredcall =response[id].extension
+           data.comment = getExistingComment.value
+           
+
+             fetch('http://192.168.70.250/sbtph-api-style/api/put_comment.php', {method:'post', body:JSON.stringify(data)})
+             .then(response => {
+                 return response.json()
+             }).then(data => {
+                 console.log(data)
+                 alert(data.message)
+             }).catch(err =>{
+                 console.log(err)
+             })
+        })
+
+        modalFooter.appendChild(updateBtn);
+
+        var closeBtn = document.createElement('button');
+        closeBtn.id = response[i].extension + "cancel";
+        closeBtn.className = "btn btn-danger";
+        closeBtn.dataset.dismiss = "modal";
+        closeBtn.textContent = "Close";
+        closeBtn.addEventListener('click', function(e){
+            location.reload();
+        })
+        modalFooter.appendChild(closeBtn)
+        modalContent.appendChild(modalFooter);
+        document.getElementById('main').appendChild(parentModal);
     
     
     //put values on the elements
@@ -65,6 +153,24 @@ function agentCallDetailsTable(res,tbody) {
     linkrecording.href = response[i].callrecording;
     tdcallrecording.appendChild(linkrecording);
     tdgetdate.textContent = response[i].getDate;
+    btncomment.id = response[i].extension;
+    //Check if commeent is blank
+    if(response[i].comment === ""){
+        btncomment.textContent = "Add Comment";
+        btncomment.className  = "btn btn-outline-info btn-sm text-justify ";
+    }else{
+        btncomment.textContent = "View Comment";
+        btncomment.className  = "btn btn-info btn-sm text-justify red"
+    }
+
+    
+    btncomment.style.margin = "5px";
+    btncomment.dataset.toggle = "modal";
+    btncomment.dataset.target =  "#myModal" + i;
+    btncomment.dataset.backdrop = "static";
+    btncomment.dataset.keyboard = "false";
+
+
 
     //tds to tr
 
@@ -77,6 +183,7 @@ function agentCallDetailsTable(res,tbody) {
     tr.appendChild(tdcallduration)
     tr.appendChild(tdcallrecording);
     tr.appendChild(tdgetdate);
+    tr.appendChild(btncomment);
 
     //append tr to tbody
     active_tbody.appendChild(tr);

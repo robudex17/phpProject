@@ -185,7 +185,9 @@ class Csd {
                     "endtime" =>  date("h:i:s a",$EndTime),
 					"callDuration" => $duration,
                     "callrecording" => $full_url,
-					"getDate" => $row['getDate']
+					"getDate" => $row['getDate'],
+                    "comment" => $row['comment'],
+                    "startimestamp" => $row['StartTimeStamp']
 				);
 				array_push($agent_calls_details, $agent);
 			}
@@ -196,7 +198,30 @@ class Csd {
     	}
     }
     
+    public function putComment($startimestamp, $getdate, $whoansweredcall, $comment) {
+        //build query
+        //$query = "UPDATE" .$this->inbound_callstatus_table. " SET comment=:comment WHERE StartTimeStamp=:startimestamp AND getDate=:getdate AND WhoAnsweredCall=:whoansweredcall" ;
+       $query = "UPDATE `inbound_callstatus` SET `comment`='$comment' WHERE `StartTimeStamp`='$startimestamp' AND `getDate`='$getdate' AND `WhoAnsweredCall`='$whoansweredcall'";
+        //prepare query
+        $stmnt = $this->conn->prepare($query);
 
+        //bind values
+        // $stmnt->bindParam(":comment",$comment,PDO::PARAM_STR);
+        // $stmnt->bindParam(":startimestamp",$startimestamp,PDO::PARAM_STR);
+        // $stmnt->bindParam(":getdate",$getdate,PDO::PARAM_STR);
+        // $stmnt->bindParam(":whoansweredcall",$whoansweredcall,PDO::PARAM_STR);
+
+        //excute
+      //  $stmnt->execute();
+
+        if($stmnt->execute()){
+            echo json_encode(array("message" => "Successfully Updated"));
+        }else{
+             echo json_encode(array("message" => "Error on Updating Comment"));
+        }
+
+
+    }
     public function getTotalAgentTimeStamp($getdate, $extension){
 
     	$query = "SELECT StartTimeStamp,EndTimeStamp FROM ".$this->inbound_callstatus_table." WHERE getDate=? AND CallStatus='ANSWER'  AND WhoAnsweredCall=?";

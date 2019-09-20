@@ -55,6 +55,7 @@
                             <input class="btn" type="submit"  id=clickdate" value="Select_Date"></form>
 
                       </th>
+                      <th scope="col">Comment</th>
                   </tr>
                 </thead>
                 <tbody id="collection_call_details_tbody">

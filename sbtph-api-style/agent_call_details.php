@@ -33,7 +33,7 @@
       </nav>
 </div>
 
-    <main role="main" >
+    <main role="main" id="main" >
       <h2 class="text-center font-weight-bold text-primary"><span  id="agentusername"></span><span class='text-danger'> CALLS DETAILS</span></h2>
           <div>
               <table class="table">
@@ -55,6 +55,7 @@
                             <input class="btn" type="submit"  id=clickdate" value="Select_Date"></form>
 
                       </th>
+                      <th scope="col">Comment</th>
                   </tr>
                 </thead>
                 <tbody id="agent_call_details_tbody">

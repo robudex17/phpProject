@@ -50,6 +50,8 @@ function collectionCallDetailsTable(res,tbody) {
     var tdcallrecording = document.createElement('td');
     var linkrecording = document.createElement('a');
     var tdgetdate = document.createElement('td');
+    var btncomment = document.createElement('button');
+
     
     
     //put values on the elements
@@ -64,6 +66,10 @@ function collectionCallDetailsTable(res,tbody) {
     linkrecording.href = response[i].callrecording;
     tdcallrecording.appendChild(linkrecording);
     tdgetdate.textContent = response[i].getDate;
+    btncomment.textContent = "Add Comment";
+    btncomment.className  = "btn btn-info btn-sm text-justify ";
+    btncomment.style.margin = "5px";
+ 
 
     //tds to tr
 
@@ -76,6 +82,7 @@ function collectionCallDetailsTable(res,tbody) {
     tr.appendChild(tdcallduration)
     tr.appendChild(tdcallrecording);
     tr.appendChild(tdgetdate);
+    tr.appendChild(btncomment);
 
     //append tr to tbody
     active_tbody.appendChild(tr);
