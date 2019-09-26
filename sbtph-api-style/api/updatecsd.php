@@ -18,12 +18,12 @@ $csd = new Csd($db);
  // get posted data
   $data = json_decode(file_get_contents("php://input"));
 
-$startimestamp = htmlspecialchars($data->startimestamp) ; 
-$getdate =  htmlspecialchars($data->getdate);
-$whoansweredcall = htmlspecialchars($data->whoansweredcall);
-$comment = htmlspecialchars($data->comment);
+$extension = htmlspecialchars($data->extension) ; 
+$name =  htmlspecialchars($data->name);
+$email = htmlspecialchars($data->email);
 
-$stmnt = $csd->putComment($startimestamp, $getdate, $whoansweredcall, $comment);
+
+$stmnt = $csd->updateCSDAgent($extension,$name,$email);
 //$stmnt = $csd->putComment("20190920-131217", "2019-09-20", "6328", "This is updated comment");
 // echo json_encode($data);
 //echo $startimestamp;

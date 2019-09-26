@@ -146,6 +146,7 @@ function agentCallDetailsTable(res,tbody) {
     tdextension.textContent = response[i].extension;
     tdcallednumber.textContent = response[i].calledNumber;
     tdcaller.textContent = response[i].caller;
+    tdcallstatus.textContent = response[i].callStatus
     tdstarttime.textContent = response[i].startime;
     tdendtime.textContent = response[i].endtime;
     tdcallduration.textContent = response[i].callDuration;
@@ -178,6 +179,7 @@ function agentCallDetailsTable(res,tbody) {
     tr.appendChild(tdextension);
     tr.appendChild(tdcallednumber);
     tr.appendChild(tdcaller);
+    tr.appendChild(tdcallstatus)
     tr.appendChild(tdstarttime);
     tr.appendChild(tdendtime);
     tr.appendChild(tdcallduration)

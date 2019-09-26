@@ -17,6 +17,35 @@ class Csd {
     	$this->conn = $db;
     }
 
+    public function getAll() {
+        // build query
+        $query = "SELECT * FROM ".$this->csdinbound_table."";
+
+        //prepare the query
+
+        $stmnt = $this->conn->prepare($query);
+        //execute
+        $stmnt->execute();
+        return $stmnt;
+    }
+
+    public function getSingle($extension) {
+        // build query
+        $query = "SELECT * FROM ".$this->csdinbound_table." WHERE extension=?";
+
+        //prepare the query
+
+        $stmnt = $this->conn->prepare($query);
+
+        //bind values 
+        
+        $stmnt->bindParam(1,$extension);
+
+        //execute
+        $stmnt->execute();
+        return $stmnt;
+    }
+
 	public function changeExten($exten){
 		$query = "`csdinbound` SET `extension`='9000' WHERE `username`='ROG'";
 		
@@ -199,25 +228,43 @@ class Csd {
     }
     
     public function putComment($startimestamp, $getdate, $whoansweredcall, $comment) {
-        //build query
-        //$query = "UPDATE" .$this->inbound_callstatus_table. " SET comment=:comment WHERE StartTimeStamp=:startimestamp AND getDate=:getdate AND WhoAnsweredCall=:whoansweredcall" ;
+      
        $query = "UPDATE `inbound_callstatus` SET `comment`='$comment' WHERE `StartTimeStamp`='$startimestamp' AND `getDate`='$getdate' AND `WhoAnsweredCall`='$whoansweredcall'";
         //prepare query
         $stmnt = $this->conn->prepare($query);
 
-        //bind values
-        // $stmnt->bindParam(":comment",$comment,PDO::PARAM_STR);
-        // $stmnt->bindParam(":startimestamp",$startimestamp,PDO::PARAM_STR);
-        // $stmnt->bindParam(":getdate",$getdate,PDO::PARAM_STR);
-        // $stmnt->bindParam(":whoansweredcall",$whoansweredcall,PDO::PARAM_STR);
+       
+        $stmnt->execute();
 
-        //excute
-      //  $stmnt->execute();
+       
 
-        if($stmnt->execute()){
-            echo json_encode(array("message" => "Successfully Updated"));
+        $count = $stmnt->rowCount();
+        if($count !=0){
+                 echo json_encode(array("message" => "Successfully Updated"));
         }else{
-             echo json_encode(array("message" => "Error on Updating Comment"));
+             echo json_encode(array("message" => "Update was not Successfull"));
+        }
+
+
+    }
+
+    public function updateCSDAgent($extension,$name,$email) {
+      
+      // $query = "UPDATE `csdinbound` SET `comment`='$comment' WHERE `StartTimeStamp`='$startimestamp' AND `getDate`='$getdate' AND `WhoAnsweredCall`='$whoansweredcall'";
+       $query = "UPDATE `csdinbound` SET `extension`='$extension',`username`='$name',`email`='$email' WHERE `extension`='$extension'";
+        //prepare query
+        $stmnt = $this->conn->prepare($query);
+
+       
+        $stmnt->execute();
+
+       
+
+        $count = $stmnt->rowCount();
+        if($count !=0){
+                 echo json_encode(array("message" => "Successfully Updated"));
+        }else{
+             echo json_encode(array("message" => "Update was not Successfull"));
         }
 
 
@@ -237,6 +284,74 @@ class Csd {
     	return $stmnt;
 
     }
+
+     public function createAgent() {
+        //create query
+
+        $query = " INSERT INTO " . $this->csdinbound_table . " SET  extension = :extension, username = :name, email = :email";
+
+        // prepare queery
+        $stmnt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->extension = htmlspecialchars(strip_tags($this->extension));
+        $this->username = htmlspecialchars(strip_tags($this->username));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+
+        //bind values
+        $stmnt->bindParam(":extension", $this->extension);
+        $stmnt->bindParam(":name", $this->username);
+        $stmnt->bindParam(":email", $this->email);
+
+        //execute query
+        if($stmnt->execute()){
+            return true;
+
+        }
+        return false;
+    }
+    public function deleteAgent() {
+    // sanitize
+    $this->extension=htmlspecialchars(strip_tags($this->extension));
+
+    
+    //delete query
+    $query = "DELETE FROM `csdinbound` WHERE `extension`='$this->extension'";
+ 
+    // prepare query
+    $stmnt = $this->conn->prepare($query);
+ 
+    $stmnt->execute();
+ 
+     $count = $stmnt->rowCount();
+        if($count !=0){
+                 //delete the agent records  if there are.
+                 $this->deleteAgentRecordings($this->extension);
+                 $this->deleteAgentLogs($this->extension);
+                 echo json_encode(array("message" => "Agent Successfully Deleted"));
+        }else{
+             echo json_encode(array("message" => "Agent Cannot be Deleted"));
+        }
+     }
+     private function deleteAgentRecordings($extension){
+            $query = "DELETE FROM `inbound_callstatus` WHERE `WhoAnsweredCall`='$extension'";
+
+            $stmnt = $this->conn->prepare($query);
+
+            $stmnt->execute();
+            $count = $stmnt->rowCount();
+           
+     }
+     private function deleteAgentLogs($extension){
+        $query = "DELETE FROM `logs` WHERE `extension`='$extension'";
+
+            $stmnt = $this->conn->prepare($query);
+
+            $stmnt->execute();
+            $count = $stmnt->rowCount();
+     }
+
+     
 
      private function secToHR($seconds) {
         $hours = floor($seconds / 3600);

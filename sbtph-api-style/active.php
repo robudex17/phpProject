@@ -28,6 +28,8 @@
         <a class="nav-link " href="inactive.php">INACTIVE</a>
         <a class="nav-link" href="call-summary.php">CALL-SUMMARY</a>
         <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
+        <a class="nav-link" href="csd_manage.php">MANAGE CSD AGENTS</a> 
+        <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
 
        
       </nav>

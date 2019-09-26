@@ -148,6 +148,10 @@ function logInOutTable(data,tbody) {
         //Creating Channel Button per Itiration
         channelbtn.textContent = 'Active'
         channelbtn.className ="btn btn-primary btn-sm";
+        var icon = document.createElement('i');
+        icon.className = "fa fa-phone";
+        icon.style.padding = "3px";
+        channelbtn.appendChild(icon);
         channelbtn.style.margin = "5px";
         channelbtn.id = response[i].extension;
         channelbtn.dataset.toggle = "modal";

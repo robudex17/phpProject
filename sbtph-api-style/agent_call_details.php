@@ -28,6 +28,8 @@
         <a class="nav-link" href="inactive.php">INACTIVE</a>
         <a class="nav-link btn " href="call-summary.php">CALL-SUMMARY</a>
         <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
+        <a class="nav-link" href="csd_manage.php">MANAGE CSD AGENTS</a> 
+        <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
 
        
       </nav>
@@ -42,6 +44,7 @@
                       <th scope="col">#</th>
                       <th scope="col">Extension</th>
                       <th scope="col">CalledNumber</th>
+                      <th scope="col">Caller</th>
                       <th scope="col">CallStatus</th>
                       <th scope="col">StartTime</th>
                       <th scope="col">EndTime</th>
@@ -51,8 +54,8 @@
                           <form>
                             <input type="hidden" name="extension" id="extension">
                             <input type="hidden" name="username" id="username">
-                            <input type="date" name="getdate" id="datePicker"> 
-                            <input class="btn" type="submit"  id=clickdate" value="Select_Date"></form>
+                            <input type="date" name="getdate" id="datePicker" style="width: 120px;"> 
+                            <input class="btn btn-sm"" type="submit"  id=clickdate" value="Select_Date"></form>
 
                       </th>
                       <th scope="col">Comment</th>
@@ -67,3 +70,5 @@
     </main>
 
  <?php include ('footer.php');?>
+
+ 

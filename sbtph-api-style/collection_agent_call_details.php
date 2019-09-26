@@ -28,12 +28,14 @@
         <a class="nav-link" href="inactive.php">INACTIVE</a>
         <a class="nav-link btn " href="call-summary.php">CALL-SUMMARY</a>
         <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
+        <a class="nav-link" href="csd_manage.php">MANAGE CSD AGENTS</a> 
+        <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
 
        
       </nav>
 </div>
 
-    <main role="main" >
+    <main role="main" id="main" >
       <h2 class="text-center font-weight-bold text-primary"><span  id="agentusername"></span><span class='text-danger'> CALLS DETAILS</span></h2>
           <div>
               <table class="table">

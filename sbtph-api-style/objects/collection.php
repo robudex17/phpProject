@@ -4,16 +4,27 @@ class Collection {
 
 	//CSD class properties
 	private $collectionteam = "collectionteam";
-	private $collectionteam_callsummary = "collectionteam_callsummary";
+	private $collectionteam_callsummary_table = "collectionteam_callsummary";
 	private $conn;
 	public $extension;
 	public $name;
+	public $email;
 	
    //create database connection  when this class instantiated
     public function __construct($db){
     	$this->conn = $db;
     }
+    public function getAll() {
+        // build query
+        $query = "SELECT * FROM ".$this->collectionteam."";
 
+        //prepare the query
+
+        $stmnt = $this->conn->prepare($query);
+        //execute
+        $stmnt->execute();
+        return $stmnt;
+    }
     public function collection_summary($getdate){
     	$currentdate = date('Y-m-d');
 
@@ -54,6 +65,7 @@ class Collection {
                  	"totalduration" => $total_duration,
                  	"getdate" => $getdate,
                  	"calldetails" => "collection_agent_call_details.php?extension=" . $row['extension'] . "&name=" . $row['name'] . "&getdate=" . $getdate
+                    
                  );
 
                 
@@ -69,7 +81,7 @@ class Collection {
     public function getAgentTotalRecords($extension, $getdate) {
 
     	//build query
-    	$query  = "SELECT StartTimeStamp,EndTimeStamp FROM ".$this->collectionteam_callsummary." WHERE getDate=? AND CallStatus='ANSWER'  AND Caller =?";
+    	$query  = "SELECT StartTimeStamp,EndTimeStamp FROM ".$this->collectionteam_callsummary_table." WHERE getDate=? AND CallStatus='ANSWER'  AND Caller =?";
     	
         //prepare the query
         $stmnt = $this->conn->prepare($query);
@@ -90,7 +102,7 @@ class Collection {
     public function collectionCallDetails($extension,$name,$getdate){
 
       //  build query
-    	$query = "SELECT * FROM " . $this->collectionteam_callsummary . " WHERE Caller=? AND CallStatus='ANSWER' AND getDate=?";
+    	$query = "SELECT * FROM " . $this->collectionteam_callsummary_table . " WHERE Caller=? AND CallStatus='ANSWER' AND getDate=?";
     	// $query  = "SELECT StartTimeStamp,EndTimeStamp FROM ".$this->collectionteam_callsummary." WHERE getDate='2019-09-13' AND CallStatus='ANSWER'  AND Caller ='6340'";
     	// //prepare the query
     	 $stmnt = $this->conn->prepare($query);
@@ -136,7 +148,9 @@ class Collection {
                     "endtime" =>  date("h:i:s a",$EndTime),
 					"callDuration" => $duration,
                     "callrecording" => $full_url,
-					"getDate" => $row['getDate']
+					"getDate" => $row['getDate'],
+                    "comment" => $row['comment'],
+                    "starttimestamp" => $row['StartTimeStamp']
 				);
 				array_push($collection_calls_details, $agent);
 			}
@@ -149,12 +163,76 @@ class Collection {
     	
      }
 
+     public function putcollComment($startimestamp, $getdate, $caller, $comment) {
+        //build query
+    
+       $query = "UPDATE `collectionteam_callsummary` SET `comment`='$comment' WHERE `StartTimeStamp`='$startimestamp' AND `getDate`='$getdate' AND `Caller`='$caller'";
+        //prepare query
+        $stmnt = $this->conn->prepare($query);
+       
+
+        //excute
+        $stmnt->execute();
+
+        $count = $stmnt->rowCount();
+        if($count !=0){
+                 echo json_encode(array("message" => "Successfully Updated"));
+        }else{
+             echo json_encode(array("message" => "Update was not Successfull"));
+        }
+
+
+    }
     public function test(){
     	echo "test";
 
     }
 
+      public function updateCollectionAgent() {
+      
+      	 $query = "UPDATE `collectionteam` SET `extension`='$this->extension',`name`='$this->name',`email`='$this->email' WHERE `extension`='$this->extension'";
+        //prepare query
+        $stmnt = $this->conn->prepare($query);
 
+       
+        $stmnt->execute();
+
+       
+
+        $count = $stmnt->rowCount();
+        if($count !=0){
+                 echo json_encode(array("message" => "Successfully Updated"));
+        }else{
+             echo json_encode(array("message" => "Update was not Successfull"));
+        }
+         
+
+    }
+    public function createAgent() {
+        //create query
+
+        $query = " INSERT INTO " . $this->collectionteam . " SET  extension = :extension, name = :name, email = :email";
+
+        // prepare queery
+        $stmnt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->extension = htmlspecialchars(strip_tags($this->extension));
+        $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+
+        //bind values
+        $stmnt->bindParam(":extension", $this->extension);
+        $stmnt->bindParam(":name", $this->name);
+        $stmnt->bindParam(":email", $this->email);
+
+        //execute query
+        if($stmnt->execute()){
+        	return true;
+
+        }
+        return false;
+    }
 
     private function secToHR($seconds) {
         $hours = floor($seconds / 3600);
@@ -162,6 +240,42 @@ class Collection {
         $seconds = $seconds % 60;
          return "$hours:$minutes:$seconds";
     }
+
+
+    public function deleteAgent() {
+    // sanitize
+    $this->extension=htmlspecialchars(strip_tags($this->extension));
+
+    
+    //delete query
+    $query = "DELETE FROM `collectionteam` WHERE `extension`='$this->extension'";
+ 
+    // prepare query
+    $stmnt = $this->conn->prepare($query);
+ 
+    $stmnt->execute();
+ 
+     $count = $stmnt->rowCount();
+        if($count !=0){
+                 //delete the agent records  if there are.
+                 $this->deleteAgentRecordings($this->extension);
+                 
+                 echo json_encode(array("message" => "Agent Successfully Deleted"));
+        }else{
+             echo json_encode(array("message" => "Agent Cannot be Deleted"));
+        }
+     }
+     private function deleteAgentRecordings($extension){
+            $query = "DELETE FROM `collectionteam_callsummary` WHERE `Caller`='$extension'";
+
+            $stmnt = $this->conn->prepare($query);
+
+            $stmnt->execute();
+            $count = $stmnt->rowCount();
+           
+     }
+
+
 
 }
 

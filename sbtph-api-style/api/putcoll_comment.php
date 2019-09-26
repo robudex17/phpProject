@@ -9,21 +9,19 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 //include database and object files
 include_once '../config/database.php';
-include_once '../objects/csd.php';
+include_once '../objects/collection.php';
 
 $database = new Database();
 $db = $database->getConnection();
 
-$csd = new Csd($db);
- // get posted data
-  $data = json_decode(file_get_contents("php://input"));
+$collection = new Collection($db);
+// get posted data
+ $data = json_decode(file_get_contents("php://input"));
 
-$startimestamp = htmlspecialchars($data->startimestamp) ; 
+$starttimestamp = htmlspecialchars($data->starttimestamp) ; 
 $getdate =  htmlspecialchars($data->getdate);
-$whoansweredcall = htmlspecialchars($data->whoansweredcall);
+$caller = htmlspecialchars($data->caller);
 $comment = htmlspecialchars($data->comment);
 
-$stmnt = $csd->putComment($startimestamp, $getdate, $whoansweredcall, $comment);
+$stmnt = $collection->putcollComment($starttimestamp, $getdate, $caller, $comment);
 //$stmnt = $csd->putComment("20190920-131217", "2019-09-20", "6328", "This is updated comment");
-// echo json_encode($data);
-//echo $startimestamp;

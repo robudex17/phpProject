@@ -8,6 +8,7 @@ class Collection {
 	private $conn;
 	public $extension;
 	public $name;
+	public $email;
 	
    //create database connection  when this class instantiated
     public function __construct($db){
