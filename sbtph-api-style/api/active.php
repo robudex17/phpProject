@@ -21,17 +21,26 @@ $stmnt = $csd->active_inactive($canreceive_calls);
 $num = $stmnt->rowCount();
 $csd_active = array();
 $log = "IN";
+
+  function secToHR($seconds) {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds / 60) % 60);
+        $seconds = $seconds % 60;
+         return "$hours:$minutes:$seconds";
+    }
 if($num !=0){
 	 while($row = $stmnt->fetch(PDO::FETCH_ASSOC)){
 	 	$login_duration = $csd->login_logout_duration($log,$row['extension']);
-	 	$getchannelStat = $csd->getActiveChannels($row['extension']);
+	 	$getchannelcounterStat = $csd->getActiveChannels($row['extension']);
 	 	
 	 	$csd_active_agent = array(
 	 		"extension" => $row['extension'],
 	 		"username" => $row['username'],
 	 		"loginlogout" => "login_logout_details.php?extension=" .$row['extension'] . "&username=" .$row['username'],
 	 		"loginduration" => $login_duration,
-	 		"channelstat" => $getchannelStat['status']
+	 		"channelstat" => $getchannelcounterStat['status'],
+	 		"counter" => $getchannelcounterStat['counter'],
+	 		"activecalltime" => secToHR($getchannelcounterStat['counter'])
 	 	);
 	 	array_push($csd_active, $csd_active_agent);
 	 }

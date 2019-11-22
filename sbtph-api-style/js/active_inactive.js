@@ -11,7 +11,7 @@ function getActiveAgents(){
   })
   setTimeout(function() {
     location.reload(true)
-  }, 10000)
+  },10000)
  }
 
 function getInactiveAgents(){
@@ -25,8 +25,8 @@ function getInactiveAgents(){
 }
 
 function logInOutTable(data,tbody) {
- getLoginUser();
- var response = data;
+   getLoginUser();
+   var response = data;
 
   
   var tb_body = document.getElementById(tbody);
@@ -60,8 +60,8 @@ function logInOutTable(data,tbody) {
     tr.appendChild(tdloginlogout);
     tr.appendChild(tdloginduration);
 
-    //for active channels only
-    if(response[i].channelstat == 1){
+    //for active channels and counter greater or equal than 10 only
+    if(response[i].channelstat == 1 && response[i].counter >= 10 ){
 
         //Creating Modal Form
           
@@ -146,7 +146,7 @@ function logInOutTable(data,tbody) {
 
          
         //Creating Channel Button per Itiration
-        channelbtn.textContent = 'Active'
+        channelbtn.textContent = 'Active:  ' + response[i].activecalltime;
         channelbtn.className ="btn btn-primary btn-sm";
         var icon = document.createElement('i');
         icon.className = "fa fa-phone";

@@ -1,4 +1,1 @@
-192.168.71.88    6395             b277e208-5155ee  (ulaw)           No       Rx: ACK                    6395      
-192.168.71.88    6395             ef4f9335-aba3a4  (nothing)        No       Rx: ACK                    6395      
-10.74.40.196     6408             0d8c329d1293801  (ulaw)           No       Tx: ACK                    6408      
-192.168.73.222   6377             5c6c884d5a0e9ca  (ulaw)           No       Tx: ACK                    6377      
+192.168.73.122   6307             043cc65a6d2dc65  (ulaw)           No       Tx: ACK                    6307      

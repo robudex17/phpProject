@@ -15,7 +15,20 @@ function secToHR($seconds) {
 ?>
 
 <?php include ('header.php');?>
-
+<body class="bg-light" onload="loadme()">
+<script type="text/javascript">
+	function loadme() {
+		setTimeout(function(){
+			location.reload()
+		},1000)
+	}
+</script>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+      <a class="navbar-brand mr-auto mr-lg-0 " href="#">CSD PHILIPPINES INBOUND MONITORING</a>
+      <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
 <div class="nav-scroller bg-blue shadow-sm">
       <nav class="nav nav-underline">
        

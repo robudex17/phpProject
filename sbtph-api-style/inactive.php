@@ -23,7 +23,7 @@
       </button>
     </nav>
 
-<div class="nav-scroller bg-blue shadow-sm">
+<div class="nav-scroller bg-blue shadow-sm" >
       <nav class="nav nav-underline">
        
         <a class="nav-link  " href="active.php">ACTIVE</a>
@@ -42,7 +42,7 @@
           <div>
               <table class="table">
                 <thead class="thead-dark">
-                   <tr>
+                   <tr >
                       <th scope="col">#</th>
                       <th scope="col">EXTENSION</th>
                       <th scope="col">NAME</th>
