@@ -1,29 +1,29 @@
-document.getElementById('form_date').addEventListener("submit", getCollectionCallSummary);
+document.getElementById('form_date').addEventListener("submit", getOutboundCallSummary);
 
-function getCollectionCallSummary(){
+function getOutboundCallSummary(){
   getLoginUser()
   var querystring = window.location.search.substring(1)
   var querydate = document.getElementById('form_date').getdate.value;
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      var tbody = 'collection_summary'
-     callCollectionSummaryTable(this.responseText,tbody);
+      var tbody = 'csd_outbound'
+     csdOutboundSummaryTable(this.responseText,tbody);
       
     }
   };
   if(querystring !== ''){
-    var apiquery = `api/collection_summary.php?${querystring}`;
+    var apiquery = `api/csd_outbound.php?${querystring}`;
     xhttp.open("GET", apiquery  , true);
     xhttp.send();
   }else {
-    xhttp.open("GET", "api/collection_summary.php", true);
+    xhttp.open("GET", "api/csd_outbound.php", true);
     xhttp.send();
   }
  
 }
 
-function callCollectionSummaryTable(res,tbody) {
+function csdOutboundSummaryTable(res,tbody) {
   var response = JSON.parse(res);
   var collection_tbody = document.getElementById(tbody);   
     if(response.message === "No Records Found"){
@@ -55,7 +55,7 @@ function callCollectionSummaryTable(res,tbody) {
       //put values on the elements
       tdi.textContent = i+1;
       tdextension.textContent = response[i].extension;
-      tdname.textContent = response[i].name;
+      tdname.textContent = response[i].username;
       tdtotalmadecalls.textContent = response[i].totalmadecalls;
       tdtotal_duration.textContent = response[i].totalduration;
      linkdate.href = response[i].calldetails;

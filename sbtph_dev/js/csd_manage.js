@@ -32,6 +32,10 @@ function addcsdAgent() {
 
 function getAllAgents() {
 	getLoginUser();
+    var position = document.getElementById('position').value;
+     if(position != 1) {
+        document.getElementById('add_agent').disabled = true;
+    }
 
 	fetch('http://192.168.70.250/sbtph_dev/api/csd_manage.php')
 	.then(data => {
@@ -44,7 +48,7 @@ function getAllAgents() {
 }
 
 function putToTable(data){
-
+   var position = document.getElementById('position').value;
 	for (var i= 0; i< data.length; i++) {
 			//creat element
 			var tr = document.createElement('tr')
@@ -137,6 +141,9 @@ function putToTable(data){
 
        // updateBtn.dataset.dismiss = "modal";
         updateBtn.textContent = "Update";
+         if(position != 1) {
+             updateBtn.disabled = true;
+        }
         updateBtn.addEventListener('click', function(e){
             var id = e.path[0].id
             var getUpdateName = document.getElementById(id + "name")
@@ -206,6 +213,9 @@ function putToTable(data){
         // actDelete.dataset.target =  "#myModal" + i;
         // actDelete.dataset.backdrop = "static";
         // actDelete.dataset.keyboard = "false";
+         if(position != 1) {
+             actDelete.disabled = true;
+        }
         actDelete.addEventListener('click',function(e){
             
             var params  = {};

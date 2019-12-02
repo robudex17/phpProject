@@ -56,7 +56,7 @@ function callCollectionSummaryTable(res,tbody) {
       tdi.textContent = i+1;
       tdextension.textContent = response[i].extension;
       tdname.textContent = response[i].name;
-      tdtotalmadecalls.textContent = response[i].totalmadecalls;
+      tdtotalmadecalls.textContent = response[i].tdtotalmadecalls;
       tdtotal_duration.textContent = response[i].totalduration;
      linkdate.href = response[i].calldetails;
       linkdate.textContent = response[i].getdate;

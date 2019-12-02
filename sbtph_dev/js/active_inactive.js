@@ -3,7 +3,7 @@ function getActiveAgents(){
    setTimeout
    getLoginUser()
 
-   fetch('http://192.168.70.250/sbtph_dev/api/active.php').then(response => {
+   fetch('http://192.168.70.250/sbtph-api-style/api/active.php').then(response => {
     return response = response.json();
   }).then(data =>{
     var tbody = 'active_tbody';
@@ -16,7 +16,7 @@ function getActiveAgents(){
 
 function getInactiveAgents(){
    getLoginUser()
-  fetch('http://192.168.70.250/sbtph_dev/api/inactive.php').then(response => {
+  fetch('http://192.168.70.250/sbtph-api-style/api/inactive.php').then(response => {
     return response = response.json();
   }).then(data =>{
     var tbody = 'inactive_tbody';
@@ -25,8 +25,8 @@ function getInactiveAgents(){
 }
 
 function logInOutTable(data,tbody) {
- getLoginUser();
- var response = data;
+   getLoginUser();
+   var response = data;
 
   
   var tb_body = document.getElementById(tbody);
@@ -60,8 +60,8 @@ function logInOutTable(data,tbody) {
     tr.appendChild(tdloginlogout);
     tr.appendChild(tdloginduration);
 
-    //for active channels only
-    if(response[i].channelstat == 1){
+    //for active channels and counter greater or equal than 10 only
+    if(response[i].channelstat == 1 && response[i].counter >= 10 ){
 
         //Creating Modal Form
           
@@ -120,7 +120,7 @@ function logInOutTable(data,tbody) {
             var querystring = JSON.stringify(params);
         
 
-            fetch(`http://192.168.70.250/sbtph_dev/utils/chanspy.php?querystring=${querystring}`).then(response =>{
+            fetch(`http://192.168.70.250/sbtph-api-style/utils/chanspy.php?querystring=${querystring}`).then(response =>{
              return response = response.json()
             }).then(data => 
               console.log(data)
@@ -146,7 +146,7 @@ function logInOutTable(data,tbody) {
 
          
         //Creating Channel Button per Itiration
-        channelbtn.textContent = 'Active'
+        channelbtn.textContent = 'Active:  ' + response[i].activecalltime;
         channelbtn.className ="btn btn-primary btn-sm";
         var icon = document.createElement('i');
         icon.className = "fa fa-phone";
@@ -222,104 +222,3 @@ function logInOutDetailsTables(res,tbody) {
 
 }
 
-var buttons = document.getElementsByTagName("button");
-var buttonsCount = buttons.length;
-for (var i = 0; i <= buttonsCount; i += 1) {
-  createModal(i, buttons[i].id)
-   
-}
-
-
-
-function createModal(id,exten) {
-	//Creating Modal Form
-            
-	        var parentModal = document.createElement('div');
-	        document.getElementById('main').appendChild(parentModal);
-	        parentModal.id =  "myModal" + id;
-	        parentModal.className = "modal";
-	        var modalDialog = document.createElement('div');
-	        modalDialog.className = "modal-dialog";
-	        parentModal.appendChild(modalDialog);
-
-	        var modalContent = document.createElement('div');
-	        modalContent.className = "modal-content";
-	        modalDialog.appendChild(modalContent);
-
-	        var modalHeader = document.createElement('div');
-	        modalHeader.className = "modal-header";
-	        var modalTitle = document.createElement('h4');
-	        modalTitle.className = "modal-title";
-	        modalTitle.textContent = "CALL BARGING";
-	        var modalBtn = document.createElement('button');
-	        modalBtn.className= "close";
-	        modalBtn.dataset.dismiss = "modal";
-	        // modalBtn.textContent = "&times;";
-	        modalHeader.appendChild(modalTitle);
-	        modalHeader.appendChild(modalBtn);
-	        modalContent.appendChild(modalHeader);
-
-
-	        var modalBody = document.createElement('div');
-	        modalBody.className = "modal-body";
-	        var pBody = document.createElement('p');
-	        pBody.id = id + "message";
-	        pBody.textContent = exten + " Channel is Currently Active";
-	        modalBody.appendChild(pBody)
-	        modalContent.appendChild(modalBody);
-
-	        var modalFooter = document.createElement('div');
-	        modalFooter.id = id + "modalfooter";
-	        modalFooter.className = "modal-footer";
-
-	        var listenBtn = document.createElement('button');
-	        listenBtn.id = id ;
-	        listenBtn.className = "btn btn-primary";
-
-	       // listenBtn.dataset.dismiss = "modal";
-	        listenBtn.textContent = "Listen Now";
-	        listenBtn.addEventListener('click', function(e){
-	             console.log(e);
-	             e.path[0].hidden = true;
-	             var user_extension = document.getElementById('hidden_extension').value;
-	           
-	            var params = {}
-	            params.channel = user_extension
-	            params.channel_to_spy = e.path[0].id;
-	            var querystring = JSON.stringify(params);
-	        
-
-	            fetch(`http://192.168.70.250/sbtph_dev/utils/chanspy.php?querystring=${querystring}`).then(response =>{
-	             return response = response.json()
-	            }).then(data => 
-	              console.log(data)
-	            ).catch(err =>{
-	              console.log(err)
-	            })
-
-	        })
-
-	        modalFooter.appendChild(listenBtn);
-
-	        var cancelBtn = document.createElement('button');
-	        cancelBtn.id = id + "cancel";
-	        cancelBtn.className = "btn btn-danger";
-	        cancelBtn.dataset.dismiss = "modal";
-	        cancelBtn.textContent = "Close";
-	        cancelBtn.addEventListener('click', function(e){
-	            location.reload();
-	        })
-	        modalFooter.appendChild(cancelBtn)
-	        modalContent.appendChild(modalFooter);
-	        document.getElementById('main').appendChild(parentModal);
-
-}
-
-
-function loadme(){
-	setTimeout(function () {
-		
-		location.reload();
-    getLoginUser()
-	}, 10000)
-}

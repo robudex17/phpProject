@@ -1,11 +1,14 @@
 
+var position = document.getElementById('position').value;
 document.getElementById('addbtn').addEventListener('click', function(e){
-   
-   addcsdAgent()
+
+        addAgent()
+     
+     
 });
 
 
-function addcsdAgent() {
+function addAgent() {
     var data = {};
     data.name = document.getElementById('addAgent').name.value ;
     data.extension = document.getElementById('addAgent').extension.value;
@@ -13,7 +16,7 @@ function addcsdAgent() {
     
     //call fetch function
 
-    fetch('http://192.168.70.250/sbtph_dev/api/create_csd_agent.php', { method: 'post', body:JSON.stringify(data)} )
+    fetch('http://192.168.70.250/sbtph_dev/api/create_collection_agent.php', { method: 'post', body:JSON.stringify(data)} )
     .then(response => {
         response = response.json();
         return response;
@@ -27,24 +30,25 @@ function addcsdAgent() {
 
 
 
-
-
-
-function getAllAgents() {
+function getAllCollectionAgents() {
 	getLoginUser();
-
-	fetch('http://192.168.70.250/sbtph_dev/api/csd_manage.php')
+    var position = document.getElementById('position').value;
+    if(position != 1) {
+        document.getElementById('add_agent').disabled = true;
+    }
+	fetch('http://192.168.70.250/sbtph_dev/api/collection_manage.php')
 	.then(data => {
 		data = data.json();
 		return data
 	}).then(data =>
 		putToTable(data)
+        
 	)
     .catch(err => console.log(err))
 }
 
 function putToTable(data){
-
+    var position = document.getElementById('position').value;
 	for (var i= 0; i< data.length; i++) {
 			//creat element
 			var tr = document.createElement('tr')
@@ -60,9 +64,9 @@ function putToTable(data){
 			tdname.textContent = data[i].name 
 			tdextension.textContent = data[i].extension
 			tdemail.textContent = data[i].email
-			tdname.className = " lead text-justify"
-			tdemail.className ="text-primary lead text-justify"
-			tdextension.className ="lead text-justify"
+			tdname.className = "  text-justify lead "
+			tdemail.className ="text-primary  text-justify lead"
+			tdextension.className ="text-justify lead"
 
 
 			 //Creating Modal Form
@@ -101,7 +105,7 @@ function putToTable(data){
         var namelabel = document.createElement('label')
         var extensionlabel = document.createElement('label')
         var emaillabel = document.createElement('label')
-
+         
         nameBody.id = i + "name"
         extensionBody.id = i + "extension"
         emailBody.id = i + "email"
@@ -109,10 +113,10 @@ function putToTable(data){
         extensionlabel.textContent = "Extension:"
         emaillabel.textContent = "Email:"
 
-        nameBody.setAttribute('type', 'text');
+        
         emailBody.setAttribute('type', 'email')
         nameBody.className = "form-control lead"
-        extensionBody.className = "form-control lead bg-dark text-success"
+        extensionBody.className = "form-control lead bg-dark text-success "
         emailBody.className = "form-control lead"
 
         nameBody.value = data[i].name 
@@ -137,6 +141,11 @@ function putToTable(data){
 
        // updateBtn.dataset.dismiss = "modal";
         updateBtn.textContent = "Update";
+
+            //disabled if not allowed
+            if(position != 1) {
+             updateBtn.disabled = true;
+             }
         updateBtn.addEventListener('click', function(e){
             var id = e.path[0].id
             var getUpdateName = document.getElementById(id + "name")
@@ -149,7 +158,7 @@ function putToTable(data){
             params.email = getUpdateEmail.value
             // alert(JSON.stringify(params))
 
-             fetch('http://192.168.70.250/sbtph_dev/api/updatecsd.php', {method:'post', body:JSON.stringify(params)})
+             fetch('http://192.168.70.250/sbtph_dev/api/updatecollection.php', {method:'post', body:JSON.stringify(params)})
              .then(response => {
                  return response.json()
              }).then(data => {
@@ -193,25 +202,27 @@ function putToTable(data){
         actUpdate.dataset.target =  "#myModal" + i;
         actUpdate.dataset.backdrop = "static";
         actUpdate.dataset.keyboard = "false";
-        actUpdate.addEventListener('click', function(e){
-            console.log(this)
-        })
        
      
         actDelete.textContent = 'Delete'
         actDelete.className ="btn btn-danger btn-sm font-weight-normal lead";
        // actDelete.style.margin = "4px";
-        actDelete.id = data[i].extension;
+        actDelete.id =  + data[i].extension;
         actDelete.dataset.toggle = "modal";
         // actDelete.dataset.target =  "#myModal" + i;
         // actDelete.dataset.backdrop = "static";
         // actDelete.dataset.keyboard = "false";
+
+        //disabled if not allowed
+            if(position != 1) {
+                actDelete.disabled = true;
+            }
         actDelete.addEventListener('click',function(e){
             
             var params  = {};
             params.extension = this.id;
-            if(confirm(`Are you sure you want delete ${this.id} Agent? Deleting Agent will automatically delete Agent Records as well`)){
-                 fetch('http://192.168.70.250/sbtph_dev/api/delete_csd.php', {method:'post', body:JSON.stringify(params)})
+            if(confirm(`Are you sure you want delete ${this.id} Agent? Deleting Agent will automatically delete Agent Records as well `)){
+                 fetch('http://192.168.70.250/sbtph_dev/api/delete_collection.php', {method:'post', body:JSON.stringify(params)})
              .then(response => {
                  return response.json()
              }).then(data => {
@@ -226,6 +237,9 @@ function putToTable(data){
             
            
         })
+
+
+
         tdAction.appendChild(actUpdate)
         tdAction.appendChild(actDelete)
 
