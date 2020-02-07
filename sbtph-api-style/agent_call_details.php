@@ -30,13 +30,13 @@
         <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
         <a class="nav-link" href="csd_manage.php">MANAGE CSD AGENTS</a> 
         <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
-
+        
        
       </nav>
 </div>
 
     <main role="main" id="main" >
-      <h2 class="text-center font-weight-bold text-primary"><span  id="agentusername"></span><span class='text-danger'> CALLS DETAILS</span></h2>
+      <h2 class="text-center font-weight-bold text-primary"><span  id="agentusername"></span><span class='text-danger'> CALLS DETAILS <button class="btn btn-secondary btn-sm" id="export"> EXPORT <i class="fa fa-file-excel-o" aria-hidden="true"></i></button></span></h2>
           <div>
               <table class="table">
                 <thead class="thead-dark">
@@ -66,7 +66,35 @@
                 </tbody>
             </table>
           </div>
-        <script src="js/agent_call_details.js"></script>  
+        <script src="js/agent_call_details.js"></script> 
+       <!--  <script type="text/javascript">
+           var mytestexport = document.getElementById('export')
+            mytestexport.addEventListener('click', function(){
+                fetch("http://192.168.70.250/sbtph-api-style/api/call_summary_export.php").then(response => {
+                    return response.json();
+                }).then(data => {
+                    data.options.fileName = "test"
+                    Jhxlsx.export(data.tableData, data.options);
+                }).catch(err => {
+                    console.log(err)
+                });
+            })
+
+        </script>  -->
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-36251023-1']);
+          _gaq.push(['_setDomainName', 'jqueryscript.net']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+      
     </main>
 
  <?php include ('footer.php');?>

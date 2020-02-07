@@ -2,22 +2,21 @@
 //required headers
 header("Access-Control-Allow-Origin: * ");
 header("Content-Type: application/json; charset=UTF-8");
-date_default_timezone_set('Asia/Tokyo');
+date_default_timezone_set('UTC');
 
 // // database connection will be here...
 
 // //include database and object files
-include_once '../config/database.php';
-include_once '../objects/csd.php';
+// // database connection will be here...
 
-$database = new Database();
-$db = $database->getConnection();
+// //include database and object files
 
-$csd = new Csd($db);
+$datetime = new DateTime('2020-01-30 05:01:05');
+echo $datetime->format('Y-m-d H:i:s') . "\n";
+$jp_time = new DateTimeZone('Asia/Tokyo');
+$datetime->setTimezone($jp_time);
+$gettime =  $datetime->format('Y-m-d H:i:s');
 
-$canreceive_calls = 1;
+//echo  $gettime;
 
-
-$stmt = $csd->getActiveChannels(6336);
-
-echo $stmt['extension'];
+echo date ( 'Y-m-d H:i:s', strtotime($gettime) - 1);

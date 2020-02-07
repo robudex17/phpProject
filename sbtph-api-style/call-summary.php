@@ -46,8 +46,10 @@
                       	<form id="date_form" >
                       		  <input type="date" name="getdate" id="getdate" > 	
                               <input class="btn" type="submit"  id=clickdate" value="Select_Date">
+                              <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#mySearch" dataset-backdrop="static" dataset-keyboard="false">SEARCH</button>
                           </form>
                       </th>
+                     
                   </tr>
                 </thead>
                 <tbody id="call-summary-body">
@@ -55,7 +57,39 @@
                 </tbody>
             </table>
           </div>
-         <script src="js/call_summary.js"></script>  
+
+           <div class="modal fade" id="mySearch" role="dialog">
+              <div class="modal-dialog">
+              
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                  
+                    <h4 class="modal-title">SEARCH FOR NUMBER</h4>
+                   </div>
+                   <div class="modal-body">
+                        <form method="GET" id="search_number" name="search_number" action="search_number.php">
+                            <div class="form-group">
+                              <label for="exampleInputEmail1">Search</label>
+                              <input type="text" class="form-control" id="caller" name="caller" aria-describedby="caller" placeholder="Type or Paste number here!" required="true">
+                            
+                            </div> 
+                            <hr>
+                            <div class="text-right mb-3">
+                                <input type="submit" class="btn btn-primary ml-auto">
+                                <!-- <button type="submit" class="btn btn-primary ml-auto" data-dismiss="modal" id="search" >Search</button> -->
+                              <button type="button" class="btn btn-danger ml-auto"  data-dismiss="modal" >Close</button>   
+                            </div>
+                                      
+                        </form>
+                    </div>
+                  
+              
+                 </div>
+      
+               </div>
+           </div>
+           <script src="js/call_summary.js"></script>  
     </main>
  <?php include ('footer.php');?>
  

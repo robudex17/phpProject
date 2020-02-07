@@ -1,0 +1,31 @@
+{
+  "options": {
+    "fileName": "call_summary"
+  },
+  "tableData": [
+    {
+      "sheetName": "Sheet1",
+      "data": [
+        [
+          {
+            "text": "EXTENSION"
+          },
+          {
+            "text": "NAME"
+          },
+          {
+            "text": "TOTAL CALLS ANSWERED"
+          },
+          {
+            "text": "TOTAL CALLS DURATION"
+          },
+          {
+            "text": "DATE"
+          }
+         
+        ]
+        
+      ]
+    }
+  ]
+}

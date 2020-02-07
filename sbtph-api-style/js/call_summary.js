@@ -1,5 +1,7 @@
 document.getElementById('date_form').addEventListener("submit", getCallSummary);
-
+document.getElementById('search').addEventListener('submit', function() {
+  console.log('test')
+})
 function getCallSummary(){
   getLoginUser()
   var querystring = window.location.search.substring(1)

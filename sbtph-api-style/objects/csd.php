@@ -29,21 +29,30 @@ class Csd {
         return $stmnt;
     }
 
-    public function getSingle($extension) {
-        // build query
-        $query = "SELECT * FROM ".$this->csdinbound_table." WHERE extension=?";
+    public function getSingle($extension,$getdate,$startimestamp) {
+        //build query
+        $query = "SELECT * FROM  ".$this->inbound_callstatus_table." WHERE WhoAnsweredCall=? AND getDate=? AND StartTimeStamp=?";
 
         //prepare the query
-
         $stmnt = $this->conn->prepare($query);
 
-        //bind values 
-        
+        //bind values
         $stmnt->bindParam(1,$extension);
+        $stmnt->bindParam(2,$getdate);
+        $stmnt->bindParam(3,$startimestamp);
 
-        //execute
         $stmnt->execute();
-        return $stmnt;
+
+        $num = $stmnt->rowCount();
+      
+        if ($num != 0 ){
+              $row = $stmnt->fetch(PDO::FETCH_ASSOC);
+             $agent_comment = array("comment" => $row['comment']);
+             echo json_encode($agent_comment);
+            
+        }else{
+            echo json_encode(array ("comment" => "No comment"));
+        }
     }
 
 	public function changeExten($exten){
@@ -165,7 +174,74 @@ class Csd {
 
     }
 
-    public function agentCallDetails($extension,$username,$getdate){
+        public function call_summary_export($getdate){
+         $currentdate = date('Y-m-d');
+
+        if(strtotime($getdate) > strtotime($currentdate)){
+            echo json_encode(array ("message" => "No Records Found"));
+            exit();
+        }
+        //build query
+        $query = "SELECT * FROM ".$this->csdinbound_table."  ";
+
+        //prepare the query
+
+        $stmnt = $this->conn->prepare($query);
+       
+
+        
+        if($stmnt->execute()){
+            $calls_summary_template_json = file_get_contents("/var/www/html/sbtph-api-style/objects/summary_export.json");
+            //make an object 
+            $calls_summary_obj = json_decode($calls_summary_template_json, FALSE);
+        
+            while($row = $stmnt->fetch(PDO::FETCH_ASSOC)){
+                $totalAgentTimeStamp = $this->getTotalAgentTimeStamp($getdate,$row['extension']);
+
+                //total answer calls of each agent
+                $totalanswered = $totalAgentTimeStamp->rowCount();
+
+                //This section calculate the total call duration of each agents..
+                 $total=0;
+                 while($row_calls = $totalAgentTimeStamp->fetch(PDO::FETCH_ASSOC)) {
+                    $endtime = explode("-", $row_calls['EndTimeStamp']);
+                    $startime = explode("-", $row_calls['StartTimeStamp']);
+                    $total = $total + ( (strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) );  
+                 } 
+                 //make H:m:s time format
+                 $total_duration = $this->secToHR($total);
+
+             //put individual data to array;
+             $array_extension = array("text" => $row['extension']);
+             $array_name = array("text" => $row['username']);
+             $array_total_answered = array("text" => $totalanswered);
+             $array_total_duration = array("text" => $total_duration);
+             $array_getdate = array("text" => $getdate);
+
+            $calls_agent_summary = array();
+           
+            //push it here
+            array_push($calls_agent_summary, $array_extension);
+            array_push($calls_agent_summary, $array_name);
+            array_push($calls_agent_summary, $array_total_answered);
+            array_push($calls_agent_summary, $array_total_duration);
+            array_push($calls_agent_summary, $array_getdate);
+          
+
+            array_push($calls_summary_obj->tableData[0]->data, $calls_agent_summary);
+            }
+            
+            echo json_encode($calls_summary_obj);
+        }else {
+            echo json_encode(array ("message" => "No Records Found"));
+        }
+
+
+    }
+
+
+
+    public function agentCallDetailsExport($extension,$username,$getdate){
 
     	//build query
     	$query = "SELECT * FROM  ".$this->inbound_callstatus_table." WHERE WhoAnsweredCall=? AND getDate=?";
@@ -183,7 +259,11 @@ class Csd {
 
     	if ($num != 0 ){
 
-    		$agent_calls_details = array();
+             $agent_call_details_template_json = file_get_contents("/var/www/html/sbtph-api-style/json/agent_call_details.json");
+            //make an object 
+            $agent_call_details_obj = json_decode($agent_call_details_template_json, FALSE);
+        
+    		
 
 			while($row = $stmnt->fetch(PDO::FETCH_ASSOC)){
 				$total=0;
@@ -203,29 +283,170 @@ class Csd {
                 $date_folder = str_replace('-',"", $row['getDate']);
                 $filename = $row['Caller'] .'-'. $row['CalledNumber'] .'-' .$row['StartTimeStamp']. ".mp3";
                 $full_url = $base_url . $date_folder .'/'.$filename;
+                
+                $agent = array();
+                //put each field to each array
+                $array_name = array("text" => $username);
+                $array_extension = array("text" => $extension);
+                $array_calledNumber = array("text" => $row['CalledNumber']);
+                $array_caller = array("text" => $row['Caller'] );
+                $array_callStatus = array("text" => $row['CallStatus']);
+                $array_startime = array("text" => date( "h:i:s a",$StartTime));
+                $array_endtime = array("text" => date("h:i:s a",$EndTime));
+                $array_callDuration = array("text" => $duration );
+                $array_callrecording = array("text" => $full_url);
+                $array_getDate = array("text" => $row['getDate']);
+                $array_comment = array("text" =>  $row['comment']);
+                
+                //push it 
+				array_push($agent,$array_name);
+                array_push($agent, $array_extension);
+                array_push($agent,$array_calledNumber);
+                array_push($agent,$array_caller);
+                array_push($agent, $array_callStatus);
+                array_push($agent,$array_startime);
+                array_push($agent, $array_endtime);
+                array_push($agent, $array_callDuration);
+                array_push($agent,$array_callrecording);
+                array_push($agent, $array_getDate);
+                array_push($agent,$array_comment);
 
-				 $agent = array(
-                    "name" => $username,
-					"extension" => $extension,
-					"calledNumber" => $row['CalledNumber'],
-					"caller" => $row['Caller'],
-					"callStatus" => $row['CallStatus'],
-                    "startime" => date( "h:i:s a",$StartTime),
-                    "endtime" =>  date("h:i:s a",$EndTime),
-					"callDuration" => $duration,
-                    "callrecording" => $full_url,
-					"getDate" => $row['getDate'],
-                    "comment" => $row['comment'],
-                    "startimestamp" => $row['StartTimeStamp']
-				);
-				array_push($agent_calls_details, $agent);
+				array_push($agent_call_details_obj->tableData[0]->data, $agent);
 			}
 			//http_response_code(201);
-			echo json_encode($agent_calls_details);
+			echo json_encode($agent_call_details_obj);
     	}else{
     		echo json_encode(array ("message" => "No Records Found"));
     	}
     }
+
+     public function searchCallerDetails($caller){
+
+        //build query
+        $query = "SELECT * FROM  ".$this->inbound_callstatus_table." WHERE Caller=?";
+
+        //prepare the query
+        $stmnt = $this->conn->prepare($query);
+
+        //bind values
+        $stmnt->bindParam(1,$caller);
+        
+
+        $stmnt->execute();
+
+        $num = $stmnt->rowCount();
+
+        if ($num != 0 ){
+
+            $agent_calls_details = array();
+
+            while($row = $stmnt->fetch(PDO::FETCH_ASSOC)){
+                $total=0;
+                 echo $row['EndtimeStamp'];
+                 $endtime = explode("-", $row['EndTimeStamp']);
+                 $startime = explode("-", $row['StartTimeStamp']);
+                 $total = $total + ((strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) );
+                 $duration = $this->secToHR($total);
+                 //get start and end calltime
+                $StartTime = str_replace("-", " ", $row['StartTimeStamp']);
+                $EndTime  = str_replace("-", " ", $row['EndTimeStamp']);
+                $StartTime = strtotime($StartTime);
+                $EndTime = strtotime($EndTime);
+
+                //get recordings url
+                $base_url = "http://211.0.128.110/callrecording/incoming/";
+                $date_folder = str_replace('-',"", $row['getDate']);
+                $filename = $row['Caller'] .'-'. $row['CalledNumber'] .'-' .$row['StartTimeStamp']. ".mp3";
+                $full_url = $base_url . $date_folder .'/'.$filename;
+                
+                $get_single_agent =  $this->getSingle($row['WhoAnsweredCall']);
+                $agent_row = $get_single_agent->fetch(PDO::FETCH_ASSOC);
+                 $agent = array(
+                    "agent" => $agent_row['username'],
+                    "extension" => $agent_row['extension'],
+                    "calledNumber" => $row['CalledNumber'],
+                    "caller" => $row['Caller'],
+                    "callStatus" => $row['CallStatus'],
+                    "startime" => date( "h:i:s a",$StartTime),
+                    "endtime" =>  date("h:i:s a",$EndTime),
+                    "callDuration" => $duration,
+                    "callrecording" => $full_url,
+                    "getDate" => $row['getDate'],
+                    "comment" => $row['comment'],
+                    "startimestamp" => $row['StartTimeStamp']
+                );
+                array_push($agent_calls_details, $agent);
+            }
+            //http_response_code(201);
+            echo json_encode($agent_calls_details);
+        }else{
+            echo json_encode(array ("message" => "No Records Found"));
+        }
+
+    }
+
+    public function agentCallDetails($extension,$username,$getdate){
+
+        //build query
+        $query = "SELECT * FROM  ".$this->inbound_callstatus_table." WHERE WhoAnsweredCall=? AND getDate=?";
+
+        //prepare the query
+        $stmnt = $this->conn->prepare($query);
+
+        //bind values
+        $stmnt->bindParam(1,$extension);
+        $stmnt->bindParam(2,$getdate);
+
+        $stmnt->execute();
+
+        $num = $stmnt->rowCount();
+
+        if ($num != 0 ){
+
+            $agent_calls_details = array();
+
+            while($row = $stmnt->fetch(PDO::FETCH_ASSOC)){
+                $total=0;
+                 echo $row['EndtimeStamp'];
+                 $endtime = explode("-", $row['EndTimeStamp']);
+                 $startime = explode("-", $row['StartTimeStamp']);
+                 $total = $total + ((strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) );
+                 $duration = $this->secToHR($total);
+                 //get start and end calltime
+                $StartTime = str_replace("-", " ", $row['StartTimeStamp']);
+                $EndTime  = str_replace("-", " ", $row['EndTimeStamp']);
+                $StartTime = strtotime($StartTime);
+                $EndTime = strtotime($EndTime);
+
+                //get recordings url
+                $base_url = "http://211.0.128.110/callrecording/incoming/";
+                $date_folder = str_replace('-',"", $row['getDate']);
+                $filename = $row['Caller'] .'-'. $row['CalledNumber'] .'-' .$row['StartTimeStamp']. ".mp3";
+                $full_url = $base_url . $date_folder .'/'.$filename;
+
+                 $agent = array(
+                    "name" => $username,
+                    "extension" => $extension,
+                    "calledNumber" => $row['CalledNumber'],
+                    "caller" => $row['Caller'],
+                    "callStatus" => $row['CallStatus'],
+                    "startime" => date( "h:i:s a",$StartTime),
+                    "endtime" =>  date("h:i:s a",$EndTime),
+                    "callDuration" => $duration,
+                    "callrecording" => $full_url,
+                    "getDate" => $row['getDate'],
+                    "comment" => $row['comment'],
+                    "startimestamp" => $row['StartTimeStamp']
+                );
+                array_push($agent_calls_details, $agent);
+            }
+            //http_response_code(201);
+            echo json_encode($agent_calls_details);
+        }else{
+            echo json_encode(array ("message" => "No Records Found"));
+        }
+    }
+    
     
     public function putComment($startimestamp, $getdate, $whoansweredcall, $comment) {
       

@@ -1,0 +1,34 @@
+{
+  "options": {
+    "fileName": "agent_call_details"
+  },
+  "tableData": [
+    {
+      "sheetName": "Sheet1",
+      "data": [
+        [ 
+          {
+            "text": "EXTENSION"
+          },
+          {
+            "text": "NAME"
+          },
+          {
+            "text": "TEAM LEADER"
+          },
+          {
+            "text": "TOTAL MADE CALLS"
+          },
+          {
+            "text": "TOTAL CALLS DURATION (HH:MM:SS)"
+          },
+          {
+            "text": "DATE"
+          }
+         
+        ]
+        
+      ]
+    }
+  ]
+}

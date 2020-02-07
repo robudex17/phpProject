@@ -1,6 +1,9 @@
 
+   var mytestexport = document.getElementById('export')
+   mytestexport.addEventListener('click', agentCallDetailsExport )
 
 document.getElementById('clickdate').addEventListener('submit', agentCallDetails)
+
 
 function agentCallDetails() {
 
@@ -32,9 +35,25 @@ function agentCallDetails() {
      
 }
 
+function agentCallDetailsExport() {
+    console.log('check')
+    let querystring = window.location.search.substring(1);
+    let split = querystring.split('&');
+    let extension = split[0].split('=');
+    let username = split[1].split('=');
+    let getdate = split[2].split('=');
+    let url = `http://192.168.70.250/sbtph-api-style/api/agent_call_details_export.php?${querystring}`
+    fetch(url).then(response => {
+        return response.json();
+    }).then(data => {
+        data.options.fileName = `${username[1]}-${getdate[1]}-calldetails`
+        Jhxlsx.export(data.tableData, data.options);
+    })
+}
+
 function agentCallDetailsTable(res,tbody) {
    var response = JSON.parse(res);
-  
+
   var active_tbody = document.getElementById(tbody);
   var i;
   for(i=0; i< response.length ; i++){
@@ -49,7 +68,7 @@ function agentCallDetailsTable(res,tbody) {
     var tdendtime = document.createElement('td');
     var tdcallduration = document.createElement('td');
     var tdcallrecording = document.createElement('td');
-    var linkrecording = document.createElement('a');
+    var linkrecording = document.createElement('AUDIO');
     var tdgetdate = document.createElement('td');
     var btncomment = document.createElement('button');
 
@@ -104,24 +123,45 @@ function agentCallDetailsTable(res,tbody) {
        
        // listenBtn.dataset.dismiss = "modal";
         updateBtn.textContent = "Update";
+       
         updateBtn.addEventListener('click', function(e){
+           e.preventDefault() 
            var id = e.path[0].id
+           console.log(id)
             var getExistingComment = document.getElementById(id + "message")
-
+             
            var data = {};
             data.startimestamp = response[id].startimestamp;
             data.getdate = response[id].getDate
            data.whoansweredcall =response[id].extension
            data.comment = getExistingComment.value
            
-
+           
+           ///console.log(response[id].extension);
              fetch('http://192.168.70.250/sbtph-api-style/api/put_comment.php', {method:'post', body:JSON.stringify(data)})
              .then(response => {
                  return response.json()
-             }).then(data => {
-                 console.log(data)
-                 alert(data.message)
-             }).catch(err =>{
+             }).then(res => {
+                 alert(res.message)
+                 let params = `extension=${response[id].extension}&getdate=${response[id].getDate}&starttimestamp=${response[id].startimestamp}`
+                 let url = `http://192.168.70.250/sbtph-api-style/api/get_single.php?${params}`
+                 return fetch(url)
+               
+             }).then(response => 
+                {return response.json()}
+             ).then(data => {
+               
+                let btncomment = document.getElementById(response[id].extension + id);
+                if (data.comment == ''){
+                     btncomment.textContent = "Add Comment";
+                     btncomment.className  = "btn btn-outline-info btn-sm text-justify ";
+                }else {
+                    btncomment.textContent = "View Comment";
+                    btncomment.className  = "btn btn-info btn-sm text-justify red"
+                }
+             })
+
+             .catch(err =>{
                  console.log(err)
              })
         })
@@ -129,12 +169,16 @@ function agentCallDetailsTable(res,tbody) {
         modalFooter.appendChild(updateBtn);
 
         var closeBtn = document.createElement('button');
-        closeBtn.id = response[i].extension + "cancel";
+        closeBtn.id = i;
         closeBtn.className = "btn btn-danger";
         closeBtn.dataset.dismiss = "modal";
         closeBtn.textContent = "Close";
         closeBtn.addEventListener('click', function(e){
-            location.reload();
+          
+             e.preventDefault() 
+             var id = e.path[0].id
+             
+              
         })
         modalFooter.appendChild(closeBtn)
         modalContent.appendChild(modalFooter);
@@ -150,11 +194,15 @@ function agentCallDetailsTable(res,tbody) {
     tdstarttime.textContent = response[i].startime;
     tdendtime.textContent = response[i].endtime;
     tdcallduration.textContent = response[i].callDuration;
-    linkrecording.textContent = "Call Recording";
-    linkrecording.href = response[i].callrecording;
+   // linkrecording.textContent = "Call Recording";
+    //linkrecording.href = response[i].callrecording;
+    linkrecording.setAttribute("src",response[i].callrecording);
+    linkrecording.setAttribute("controls","controls");
+    linkrecording.style.width = "130px";
     tdcallrecording.appendChild(linkrecording);
     tdgetdate.textContent = response[i].getDate;
-    btncomment.id = response[i].extension;
+    btncomment.id = response[i].extension + i;
+  
     //Check if commeent is blank
     if(response[i].comment === ""){
         btncomment.textContent = "Add Comment";

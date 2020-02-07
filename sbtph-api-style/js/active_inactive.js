@@ -1,6 +1,12 @@
 
+setInterval(function() {
+    var tb_body = document.getElementById('active_tbody');
+    tb_body.innerHTML = '';
+   getActiveAgents()
+  },5000)
+
 function getActiveAgents(){
-   setTimeout
+  
    getLoginUser()
 
    fetch('http://192.168.70.250/sbtph-api-style/api/active.php').then(response => {
@@ -9,9 +15,7 @@ function getActiveAgents(){
     var tbody = 'active_tbody';
     logInOutTable(data,tbody)
   })
-  setTimeout(function() {
-    location.reload(true)
-  },10000)
+  
  }
 
 function getInactiveAgents(){
