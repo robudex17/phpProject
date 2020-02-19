@@ -5,7 +5,7 @@
 <body class="bg-light" onload="collectionCallDetails()">
 
    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-      <a class="navbar-brand mr-auto mr-lg-0 " href="#">CSD PHILIPPINES CALLS MONITORING</a>
+      <a class="navbar-brand mr-auto mr-lg-0 " id="index_menu" href="index.php">CSD PHILIPPINES CALLS MONITORING</a>
        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -22,23 +22,31 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </nav>
+    <style> 
+       #index_menu:hover {
+          color: magenta;
+       }
+     </style>
 <div class="nav-scroller bg-blue shadow-sm">
       <nav class="nav nav-underline">
        
-        <a class="nav-link" href="active.php">ACTIVE</a>
-        <a class="nav-link" href="inactive.php">INACTIVE</a>
-        <a class="nav-link" href="csd_inbound.php">CSD-INBOUND</a>
-        <a class="nav-link" href="csd_outbound.php">CSD-OUTBOUND</a>
-        <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
-        <a class="nav-link" href="csd_manage.php">MANAGE CSD AGENTS</a> 
-        <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
+        <a class="nav-link mx-0 px-2" href="active.php">ACTIVE</a>
+        <a class="nav-link mx-0 px-2" href="inactive.php">INACTIVE</a>
+        <a class="nav-link mx-0 px-2" href="csd_inbound.php">CSD-INBOUND</a>
+        <a class="nav-link mx-0 px-2" href="csd_outbound.php">CSD-OUTBOUND</a>
+        <a class="nav-link mx-0 px-2" href="csd_missedcalls.php">CSD-MISSED-CALLS </a>
+        <a class="nav-link mx-0 px-2" href="parked_calls.php">PARKED-CALLS </a>
+        <a class="nav-link mx-0 px-2" href="voicemails.php">VOICE-MAILS </a> 
+        <a class="nav-link mx-0 px-2" href="collection.php">COLLECTION-TEAM</a>
+        <a class="nav-link mx-0 px-2" href="csd_manage.php">MANAGE CSD AGENTS</a> 
+        <a class="nav-link mx-0 px-2" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
 
        
       </nav>
 </div>
 
     <main role="main" id="main" >
-      <h2 class="text-center font-weight-bold text-primary"><span  id="agentusername"></span><span class='text-danger'> CALLS DETAILS</span></h2>
+      <h2 class="text-center font-weight-bold text-primary"><span  id="agentusername"></span><span class='text-danger'> CALLS DETAILS </span><button class="btn btn-secondary btn-sm" id="export"> EXPORT <i class="fa fa-file-excel-o" aria-hidden="true"></i></button></span></span></h2>
           <div>
               <table class="table">
                 <thead class="thead-dark">

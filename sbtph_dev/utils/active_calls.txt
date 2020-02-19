@@ -1,1 +1,1 @@
-192.168.70.90    6326             2d4060c64d7c25d  (ulaw)           No       Tx: ACK                    6326      
+10.74.40.235     6307             35ff1bd32c2eea4  (ulaw)           No       Tx: ACK                    6307      

@@ -138,7 +138,7 @@ function salesCallDetailsTable(res,tbody) {
                  return response.json()
              }).then(res => {
                 
-                  alert(res.message)
+                 // alert(res.message)
                  let params = `caller=${response[id].caller}&getdate=${response[id].getDate}&starttimestamp=${response[id].starttimestamp}`
                  let url = `http://192.168.70.250/sbtph_qc/api/get_single.php?${params}`
                  return fetch(url)
@@ -147,6 +147,7 @@ function salesCallDetailsTable(res,tbody) {
              ).then(data => {
                   console.log(data)
                 let btncomment = document.getElementById(response[id].caller + id);
+                
                 console.log(btncomment.id)
                 if (data.comment == ''){
                      btncomment.textContent = "Add Comment";

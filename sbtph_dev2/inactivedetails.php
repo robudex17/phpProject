@@ -108,5 +108,6 @@ $result = $conn->query($sql);
     <script src="bootstrap.min.js"></script>
     <script src="holder.min.js"></script>
     <script src="offcanvas.js"></script>
+     <?php include ('footer.php');?>
   </body>
 </html>

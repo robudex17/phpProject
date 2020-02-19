@@ -4,7 +4,7 @@
 <body class="bg-light" onload="getActiveAgents()" >
 
      <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-      <a class="navbar-brand mr-auto mr-lg-0 " href="#">CSD PHILIPPINES CALLS MONITORING</a>
+      <a class="navbar-brand mr-auto mr-lg-0 " id="index_menu" href="index.php">CSD PHILIPPINES CALLS MONITORING</a>
        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -21,18 +21,24 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </nav>
-
+     <style> 
+       #index_menu:hover {
+          color: magenta;
+       }
+     </style>
 <div class="nav-scroller bg-blue shadow-sm">
       <nav class="nav nav-underline">
        
-        <a class="nav-link btn btn-primary btn-lg active " href="active.php">ACTIVE</a>
-        <a class="nav-link " href="inactive.php">INACTIVE</a>
-        <a class="nav-link" href="csd_inbound.php">CSD-INBOUND</a>
-        <a class="nav-link" href="csd_outbound.php">CSD-OUTBOUND</a>
-        <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
-        <a class="nav-link" href="csd_manage.php">MANAGE CSD AGENTS</a> 
-        <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
-         <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#myMetrics" dataset-backdrop="static" dataset-keyboard="false" id="add_agent">GENERATE RANKING METRICS</button>   
+        <a class="nav-link mx-0 px-2 btn btn-primary btn-lg active " href="active.php">ACTIVE</a>
+        <a class="nav-link mx-0 px-2" href="inactive.php">INACTIVE</a>
+        <a class="nav-link mx-0 px-2" href="csd_inbound.php">CSD-INBOUND</a>
+        <a class="nav-link mx-0 px-2" href="csd_outbound.php">CSD-OUTBOUND</a>
+         <a class="nav-link mx-0 px-2" href="csd_missedcalls.php">CSD-MISSED-CALLS</a>
+          <a class="nav-link mx-0 px-2" href="parked_calls.php">PARKED-CALLS</a>
+        <a class="nav-link mx-0 px-2" href="collection.php">COLLECTION-TEAM</a>
+        <a class="nav-link mx-0 px-2" href="csd_manage.php">MANAGE CSD AGENTS</a> 
+        <a class="nav-link mx-0 px-2" href="collection_manage.php">MANAGE COLLECTION AGENTS</a> 
+        
        
       </nav>
 </div>
@@ -63,7 +69,7 @@
             </div>
           </div>
         </div>
-         <?php include ('metrics.php');?>
+        
           <div >
               <table class="table">
                 <thead class="thead-dark">

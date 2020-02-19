@@ -18,7 +18,7 @@ function userlogin () {
 		    if (this.readyState == 4 && this.status == 200) {
 		       let result = JSON.parse(this.responseText);
 		       setCookie("jwt",result.jwt,1);
-		       window.location.href = "http://192.168.70.250/sbtph_dev2/";	
+		       window.location.href = HTTPADDR;	
 		    }
 
 		    if(this.readyState == 4 && this.status != 200) {

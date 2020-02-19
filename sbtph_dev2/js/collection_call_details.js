@@ -1,4 +1,5 @@
-
+var report = document.getElementById('export')
+   report.addEventListener('click', collectionCallDetailsExport)
 
 document.getElementById('clickdate').addEventListener('submit', collectionCallDetails)
 
@@ -32,6 +33,23 @@ function collectionCallDetails() {
      
 }
 
+function collectionCallDetailsExport() {
+
+    let querystring = window.location.search.substring(1);
+    let split = querystring.split('&');
+    let extension = split[0].split('=');
+    let name = split[1].split('=');
+    let getdate = split[2].split('=');
+    let url = `${HTTPADDR}api/collection_call_details_export.php?${querystring}`
+    fetch(url).then(response => {
+        return response.json();
+    }).then(data => {
+        data.options.fileName = `${name[1]}-${getdate[1]}-collection-calldetails`
+        Jhxlsx.export(data.tableData, data.options);
+    })
+}
+
+
 function collectionCallDetailsTable(res,tbody) {
    var response = JSON.parse(res);
   
@@ -48,7 +66,7 @@ function collectionCallDetailsTable(res,tbody) {
     var tdendtime = document.createElement('td');
     var tdcallduration = document.createElement('td');
     var tdcallrecording = document.createElement('td');
-    var linkrecording = document.createElement('a');
+    var linkrecording = document.createElement('AUDIO');
     var tdgetdate = document.createElement('td');
     var btncomment = document.createElement('button');
 
@@ -104,6 +122,7 @@ function collectionCallDetailsTable(res,tbody) {
        // listenBtn.dataset.dismiss = "modal";
         updateBtn.textContent = "Update";
         updateBtn.addEventListener('click', function(e){
+            e.preventDefault();
            var id = e.path[0].id
             var getExistingComment = document.getElementById(id + "message")
 
@@ -114,12 +133,30 @@ function collectionCallDetailsTable(res,tbody) {
            data.comment = getExistingComment.value
            
             
-             fetch('http://192.168.70.250/sbtph-api-style/api/putcoll_comment.php', {method:'post', body:JSON.stringify(data)})
+             fetch(`${HTTPADDR}api/putcoll_comment.php`, {method:'post', body:JSON.stringify(data)})
              .then(response => {
                  return response.json()
-             }).then(data => {
-                 console.log(data)
-                 alert(data.message)
+              }).then(res => {
+                
+                  alert(res.message)
+                 let params = `caller=${response[id].caller}&getdate=${response[id].getDate}&starttimestamp=${response[id].starttimestamp}`
+                 let url = `${HTTPADDR}api/get_collection_comment.php?${params}`
+                 console.log(url)
+                 return fetch(url)
+             }).then(response => 
+                {return response.json()}
+             ).then(data => {
+                  console.log(data)
+                let btncomment = document.getElementById(response[id].caller + id);
+                
+                console.log(btncomment.id)
+                if (data.comment == ''){
+                     btncomment.textContent = "Add Comment";
+                     btncomment.className  = "btn btn-outline-info btn-sm text-justify ";
+                }else {
+                    btncomment.textContent = "View Comment";
+                    btncomment.className  = "btn btn-info btn-sm text-justify red"
+                }
              }).catch(err =>{
                  console.log(err)
              })
@@ -133,7 +170,7 @@ function collectionCallDetailsTable(res,tbody) {
         closeBtn.dataset.dismiss = "modal";
         closeBtn.textContent = "Close";
         closeBtn.addEventListener('click', function(e){
-            location.reload();
+            e.preventDefault();
         })
         modalFooter.appendChild(closeBtn)
         modalContent.appendChild(modalFooter);
@@ -149,11 +186,14 @@ function collectionCallDetailsTable(res,tbody) {
     tdstarttime.textContent = response[i].startime;
     tdendtime.textContent = response[i].endtime;
     tdcallduration.textContent = response[i].callDuration;
-    linkrecording.textContent = "Call Recording";
-    linkrecording.href = response[i].callrecording;
+    //linkrecording.textContent = "Call Recording";
+    //linkrecording.href = response[i].callrecording;
+    linkrecording.setAttribute("src",response[i].callrecording);
+    linkrecording.setAttribute("controls","controls");
+    linkrecording.style.width = "130px";
     tdcallrecording.appendChild(linkrecording);
     tdgetdate.textContent = response[i].getDate;
-    btncomment.id = response[i].extension;
+    btncomment.id = response[i].caller + i;
     //Check if commeent is blank
     if(response[i].comment === ""){
         btncomment.textContent = "Add Comment";

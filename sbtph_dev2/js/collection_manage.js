@@ -16,7 +16,7 @@ function addAgent() {
     
     //call fetch function
 
-    fetch('http://192.168.70.250/sbtph_dev/api/create_collection_agent.php', { method: 'post', body:JSON.stringify(data)} )
+    fetch(`${HTTPADDR}api/create_collection_agent.php`, { method: 'post', body:JSON.stringify(data)} )
     .then(response => {
         response = response.json();
         return response;
@@ -158,7 +158,7 @@ function putToTable(data){
             params.email = getUpdateEmail.value
             // alert(JSON.stringify(params))
 
-             fetch('http://192.168.70.250/sbtph_dev/api/updatecollection.php', {method:'post', body:JSON.stringify(params)})
+             fetch(`${HTTPADDR}updatecollection.php`, {method:'post', body:JSON.stringify(params)})
              .then(response => {
                  return response.json()
              }).then(data => {
@@ -222,7 +222,7 @@ function putToTable(data){
             var params  = {};
             params.extension = this.id;
             if(confirm(`Are you sure you want delete ${this.id} Agent? Deleting Agent will automatically delete Agent Records as well `)){
-                 fetch('http://192.168.70.250/sbtph_dev/api/delete_collection.php', {method:'post', body:JSON.stringify(params)})
+                 fetch(`${HTTPADDR}api/delete_collection.php`, {method:'post', body:JSON.stringify(params)})
              .then(response => {
                  return response.json()
              }).then(data => {
