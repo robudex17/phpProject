@@ -21,7 +21,7 @@
   <body class="bg-light" onload="getAllAgents()">
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-      <a class="navbar-brand mr-auto mr-lg-0 " href="#">CSD PHILIPPINES CALLS MONITORING</a>
+      <a class="navbar-brand mr-auto mr-lg-0 " id="index_menu" href="index.php">CSD PHILIPPINES CALLS MONITORING</a>
        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -38,31 +38,39 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </nav>
-    
+    <style>
+       #index_menu:hover {
+          color: magenta;
+       }
+     </style>
     <div class="nav-scroller bg-blue shadow-sm">
           <nav class="nav nav-underline ">
-           
-                 <a class="nav-link" href="active.php">ACTIVE</a>
-                 <a class="nav-link" href="inactive.php">INACTIVE</a>
-                 <a class="nav-link" href="csd_inbound.php">CSD-INBOUND</a>
-                 <a class="nav-link" href="csd_outbound.php">CSD-OUTBOUND</a>
-                 <a class="nav-link" href="collection.php">COLLECTION-TEAM</a>
-                 <a class="nav-link btn btn-primary btn-lg active" href="csd_manage.php">MANAGE CSD AGENTS</a> 
-                <a class="nav-link" href="collection_manage.php">MANAGE COLLECTION AGENTS</a>                 
+
+                 <a class="nav-link mx-0 px-2" href="active.php">ACTIVE</a>
+                 <a class="nav-link mx-0 px-2" href="inactive.php">INACTIVE</a>
+                 <a class="nav-link mx-0 px-2" href="csd_inbound.php">CSD-INBOUND</a>
+                 <a class="nav-link mx-0 px-2" href="csd_outbound.php">CSD-OUTBOUND</a>
+                  <a class="nav-link mx-0 px-2" href="csd_missedcalls.php">CSD-MISSED-CALLS </a>
+                  <a class="nav-link mx-0 px-2" href="parked_calls.php">PARKED-CALLS </a>
+                   <a class="nav-link mx-0 px-2" href="voicemails.php">VOICE-MAILS </a>
+                 <a class="nav-link mx-0 px-2" href="collection.php">COLLECTION-TEAM</a>
+                 <a class="nav-link mx-0 px-2 btn btn-primary btn-lg active" href="csd_manage.php">MANAGE CSD AGENTS</a>
+                <a class="nav-link mx-0 px-2" href="collection_manage.php">MANAGE COLLECTION AGENTS</a>
+                 <a class="nav-link mx-0 px-2" href="metrics.php">GEN METRICS</a>
           </nav>
     </div>
-  
+
     <main role="main" class="container" id="main">
-     
-    
+
+
 
  <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
-    
+
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-        
+
           <h4 class="modal-title">Add Agent</h4>
         </div>
         <div class="modal-body">
@@ -78,22 +86,22 @@
                   <div class="form-group">
                     <label for="exampleInputPassword1">Extension</label>
                     <input type="text" class="form-control" id="exten" name="extension" placeholder="Enter Extension" required="true">
-                  </div> 
+                  </div>
                   <hr>
                   <div class="text-right mb-3">
                       <button type="button" class="btn btn-primary ml-auto" data-dismiss="modal" id="addbtn" >Submit</button>
-                    <button type="button" class="btn btn-danger ml-auto"  data-dismiss="modal" >Close</button>   
+                    <button type="button" class="btn btn-danger ml-auto"  data-dismiss="modal" >Close</button>
                   </div>
-                            
+
           </form>
         </div>
-        
-    
+
+
       </div>
-      
+
     </div>
   </div>
-  
+
 </div>
         <table class="table table-striped " style="padding-top: 30px; padding-bottom:30px; margin-top: 30px;">
           <thead>
@@ -106,14 +114,28 @@
             </tr>
           </thead>
           <tbody id="csd_tbody">
-           
-               
+
+
           </tbody>
         </table>
-        <div class="mx-auto" style="width: 200px; padding: 30px;">
-              <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#myModal" dataset-backdrop="static" dataset-keyboard="false" id="add_agent">ADD AGENT</button>
-        </div>   
-      <script src="js/script.js"></script>
+        <div class="row justify-content-md-center pb-5">
+            <div class="col">
+
+           </div>
+
+
+            <div class="col-6">
+               <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#myModal" dataset-backdrop="static" dataset-keyboard="false" id="add_agent">ADD AGENT</button>
+            <!--   <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#myMetrics" dataset-backdrop="static" dataset-keyboard="false" id="add_agent">GENERATE RANKING METRICS</button> -->
+            <button type="button" class="btn btn-dark" id="gen_metrics" hidden>GENERATE RANKING METRICS</button>
+            </div>
+              <div class="col">
+
+           </div>
+
+        </div>
+
+
     <script src="js/csd_manage.js"></script>
     </main>
 

@@ -147,9 +147,13 @@ class Csd {
                 //This section calculate the total call duration of each agents..
                  $total=0;
                  while($row_calls = $totalAgentTimeStamp->fetch(PDO::FETCH_ASSOC)) {
-                 	$endtime = explode("-", $row_calls['EndTimeStamp']);
-                    $startime = explode("-", $row_calls['StartTimeStamp']);
-					$total = $total + ( (strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) );  
+                 	//$endtime = explode("-", $row_calls['EndTimeStamp']);
+                    //$startime = explode("-", $row_calls['StartTimeStamp']);
+					//$total = $total + ( (strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) ); 
+					$endtime = str_replace("-"," ",$row_calls['EndTimeStamp']);
+					$startime = str_replace("-", " ", $row_calls['StartTimeStamp']);
+					$total = $total + (strtotime($endtime) - strtotime($startime));
+
 				 } 
 				 //make H:m:s time format
                  $total_duration = $this->secToHR($total);
@@ -204,9 +208,12 @@ class Csd {
                 //This section calculate the total call duration of each agents..
                  $total=0;
                  while($row_calls = $totalAgentTimeStamp->fetch(PDO::FETCH_ASSOC)) {
-                    $endtime = explode("-", $row_calls['EndTimeStamp']);
-                    $startime = explode("-", $row_calls['StartTimeStamp']);
-                    $total = $total + ( (strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) );  
+                  //  $endtime = explode("-", $row_calls['EndTimeStamp']);
+                  //  $startime = explode("-", $row_calls['StartTimeStamp']);
+                  //  $total = $total + ( (strtotime($endtime[0]) + strtotime($endtime[1])) - (strtotime($startime[0]) +strtotime($startime[1])) ); 
+                  $endtime = str_replace("-"," ",$row_calls['EndTimeStamp']);
+					$startime = str_replace("-", " ", $row_calls['StartTimeStamp']);
+					$total = $total + (strtotime($endtime) - strtotime($startime)); 
                  } 
                  //make H:m:s time format
                  $total_duration = $this->secToHR($total);

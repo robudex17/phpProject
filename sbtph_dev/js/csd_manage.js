@@ -1,4 +1,7 @@
 
+document.getElementById('gen_metrics').addEventListener('click', function(e){
+    alert('This Function is not yet available');
+})
 document.getElementById('addbtn').addEventListener('click', function(e){
    
    addcsdAgent()
@@ -13,7 +16,7 @@ function addcsdAgent() {
     
     //call fetch function
 
-    fetch('http://192.168.70.250/sbtph_dev/api/create_csd_agent.php', { method: 'post', body:JSON.stringify(data)} )
+    fetch(`${HTTPADDR}api/create_csd_agent.php`, { method: 'post', body:JSON.stringify(data)} )
     .then(response => {
         response = response.json();
         return response;
@@ -37,7 +40,7 @@ function getAllAgents() {
         document.getElementById('add_agent').disabled = true;
     }
 
-	fetch('http://192.168.70.250/sbtph_dev/api/csd_manage.php')
+	fetch(`${HTTPADDR}api/csd_manage.php`)
 	.then(data => {
 		data = data.json();
 		return data
@@ -156,7 +159,7 @@ function putToTable(data){
             params.email = getUpdateEmail.value
             // alert(JSON.stringify(params))
 
-             fetch('http://192.168.70.250/sbtph_dev/api/updatecsd.php', {method:'post', body:JSON.stringify(params)})
+             fetch(`${HTTPADDR}api/updatecsd.php`, {method:'post', body:JSON.stringify(params)})
              .then(response => {
                  return response.json()
              }).then(data => {
@@ -221,7 +224,7 @@ function putToTable(data){
             var params  = {};
             params.extension = this.id;
             if(confirm(`Are you sure you want delete ${this.id} Agent? Deleting Agent will automatically delete Agent Records as well`)){
-                 fetch('http://192.168.70.250/sbtph_dev/api/delete_csd.php', {method:'post', body:JSON.stringify(params)})
+                 fetch(`${HTTPADDR}api/delete_csd.php`, {method:'post', body:JSON.stringify(params)})
              .then(response => {
                  return response.json()
              }).then(data => {

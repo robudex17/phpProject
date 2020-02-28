@@ -17,5 +17,6 @@
   <div id='main'></div>
  </div>
 <script src="js/modal.js"></script>
+ <?php include ('footer.php');?>
 </body>
 </html>

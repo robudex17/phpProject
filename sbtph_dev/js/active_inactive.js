@@ -1,22 +1,24 @@
+setInterval(function() {
+    var tb_body = document.getElementById('active_tbody');
+    tb_body.innerHTML = '';
+   getActiveAgents()
+  },5000)
 
 function getActiveAgents(){
-   setTimeout
+
    getLoginUser()
 
-   fetch('http://192.168.70.250/sbtph-api-style/api/active.php').then(response => {
+   fetch(`${HTTPADDR}api/active.php`).then(response => {
     return response = response.json();
   }).then(data =>{
     var tbody = 'active_tbody';
     logInOutTable(data,tbody)
   })
-  setTimeout(function() {
-    location.reload(true)
-  },10000)
- }
+}
 
 function getInactiveAgents(){
    getLoginUser()
-  fetch('http://192.168.70.250/sbtph-api-style/api/inactive.php').then(response => {
+  fetch(`${HTTPADDR}api/inactive.php`).then(response => {
     return response = response.json();
   }).then(data =>{
     var tbody = 'inactive_tbody';
@@ -120,7 +122,7 @@ function logInOutTable(data,tbody) {
             var querystring = JSON.stringify(params);
         
 
-            fetch(`http://192.168.70.250/sbtph-api-style/utils/chanspy.php?querystring=${querystring}`).then(response =>{
+            fetch(`${HTTPADDR}utils/chanspy.php?querystring=${querystring}`).then(response =>{
              return response = response.json()
             }).then(data => 
               console.log(data)

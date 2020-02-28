@@ -1,4 +1,28 @@
+
+var report = document.getElementById('inbound_summary_export').addEventListener('click', getCallSummaryExport)
+
 document.getElementById('date_form').addEventListener("submit", getCallSummary);
+
+
+function getCallSummaryExport(){
+  var querystring = window.location.search.substring(1);
+  var d = new Date();
+  var months = ["01", "02", "03", "04","05", "06", "07", "08","09", "10", "11", "12" ];
+   var getmonth = months[d.getMonth()];
+   var getdate = `${d.getFullYear()}-${getmonth}-${d.getDate()}`;
+   console.log(getdate)
+  var url = `${HTTPADDR }api/inbound_summary_export.php`;
+  if (querystring !== ''){
+       url = `${HTTPADDR}api/inbound_summary_export.php?${querystring}`;
+       getdate = querystring.split('=')[1];
+  }
+  fetch(url).then(response => {
+        return response.json();
+    }).then(data => {
+        data.options.fileName = `inbound_call_summary-${getdate}-calldetails`
+        Jhxlsx.export(data.tableData, data.options);
+    })
+}
 
 function getCallSummary(){
   getLoginUser()

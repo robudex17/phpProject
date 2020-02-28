@@ -1,6 +1,27 @@
 
+const HTTPADDR = "http://192.168.70.250/sbtph_dev/";
+setInterval(function() {
+  getTotalCounts()
+},5000)
 
+function getTotalCounts() {
+  fetch(`${HTTPADDR}api/get_total_counts.php`).then(res => {
+    return res.json();
+  }).then(counts => {
+     var miss_calls_counts = document.getElementById('miss_calls_counts');
+      miss_calls_counts.textContent = `(${counts.total_missed_calls})`
+      miss_calls_counts.style.font = " bold 20px arial,serif";
 
+      var parked_calls_counts = document.getElementById('parked_calls_counts');
+      parked_calls_counts.textContent = `(${counts.parked_calls})`;
+      parked_calls_counts.style.font = " bold 20px arial,serif";
+
+      var voicemail_counts = document.getElementById('voicemail_counts');
+      voicemail_counts.textContent = `(${counts.voicemail_counts})`;
+      voicemail_counts.style.font = " bold 20px arial,serif";
+
+  })
+}
 function logout() {
   alert('logout');
   document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; //delete the jwt cookie
@@ -8,21 +29,21 @@ function logout() {
 }
 
 function alreadyLogin() {
-  
+
   var jwt = getCookie('jwt')
   if (jwt != ''){
-    window.location.href = "http://192.168.70.250/sbtph_dev/";
+    window.location.href = HTTPADDR;
   }
-  
-    
+
+
 }
-         
+
 function getLoginUser() {
-  
+  getTotalCounts()
   var jwt = getCookie('jwt');
-  
+
   if (jwt === ''){
-    window.location.href = "http://192.168.70.250/sbtph_dev/login.php";
+    window.location.href = `${HTTPADDR}login.php`;
   }else{
 
     var token = JSON.parse(decodeToken(jwt));
@@ -51,7 +72,7 @@ function getCookie(cname){
         while (c.charAt(0) == ' '){
             c = c.substring(1);
         }
- 
+
         if (c.indexOf(name) == 0) {
             return c.substring(name.length, c.length);
         }
@@ -62,5 +83,5 @@ function getCookie(cname){
 function decodeToken(token){
   var playload = atob(token.split('.')[1]);
     return playload;
-    
+
 };
