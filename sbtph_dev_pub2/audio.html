@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<div id='main_div'>
+		<p> The duration of this Recording is <span id='duration'></span></p>
+
+	</div>
+  <script type="text/javascript">
+  	
+  	var  au = document.createElement('audio');
+
+  	au.src = "http://211.0.128.110/callrecording/outgoing/20200224/6444-010263776249379-20200224-213455.mp3";
+    
+    au.setAttribute("controls","controls");
+    document.getElementById('main_div').appendChild(au);
+    au.addEventListener('loadedmetadata', function(){
+    // Obtain the duration in seconds of the audio file (with milliseconds as well, a float value)
+    var duration = au.duration;
+      document.getElementById('duration').textContent = duration;
+    // example 12.3234 seconds
+    console.log("The duration of the song is of: " + duration + " seconds");
+    // Alternatively, just display the integer value with
+    // parseInt(duration)
+    // 12 seconds
+},false);
+  </script>
+</body>
+</html>

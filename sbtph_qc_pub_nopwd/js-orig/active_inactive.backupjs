@@ -1,0 +1,122 @@
+function getActiveAgents(){
+   getLoginUser()
+	 var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       var tbody = 'active_tbody'
+      logInOutTable(this.responseText,tbody);
+       
+    }
+  };
+  xhttp.open("GET", "api/active.php", true);
+  xhttp.send();
+
+ }
+
+function getInactiveAgents(){
+   getLoginUser()
+   var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var tbody = 'inactive_tbody'
+      logInOutTable(this.responseText,tbody);
+    
+    }
+  };
+  xhttp.open("GET", "api/inactive.php", true);
+  xhttp.send();
+}
+
+function logInOutTable(res,tbody) {
+  var response = JSON.parse(res);
+  var tb_body = document.getElementById(tbody);
+  var i;
+  for(i=0; i< response.length ; i++){
+    //create elements
+    var tr =  document.createElement('tr');
+    var tdi = document.createElement('td');
+    var tdlextension = document.createElement('td');
+    var tdusername = document.createElement('td');
+    var tdloginlogout = document.createElement('td');
+    var tdloginduration = document.createElement('td');
+    var linkloginlogout = document.createElement('a');
+    
+    
+    //put values on the elements
+    tdi.textContent = i+1;
+    tdlextension.textContent = response[i].extension;
+    tdusername.textContent = response[i].username;
+    
+    linkloginlogout.href = response[i].loginlogout;
+    linkloginlogout.textContent = "Click Details";
+    tdloginlogout.appendChild(linkloginlogout);
+    tdloginduration.textContent = response[i].loginduration;
+   
+
+    //tds to tr
+
+    tr.appendChild(tdi);
+    tr.appendChild(tdlextension);
+    tr.appendChild(tdusername);
+    tr.appendChild(tdloginlogout);
+    tr.appendChild(tdloginduration);
+  
+
+    //append tr to tbody
+    tb_body.appendChild(tr);
+}
+
+}
+function getLogInOutDetails() {
+   getLoginUser()
+   var querystring = window.location.search.substring(1); // get the query string from the URL of the current page.
+   var xhttp = new XMLHttpRequest();
+   var username = querystring.split('&');
+   var valuepairname = username[1].split("=");
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var tbody = 'details_tbody'
+      document.getElementById('agentname').textContent= valuepairname[1];
+      logInOutDetailsTables(this.responseText,tbody);
+    
+    }
+  };
+  var csdquery = `api/login_logout_details.php?${querystring}`;
+  xhttp.open("GET", csdquery , true);
+  xhttp.send();
+}
+
+function logInOutDetailsTables(res,tbody) {
+  var response = JSON.parse(res);
+  var detailsbody = document.getElementById(tbody);
+  var i;
+  for(i=0; i< response.length ; i++){
+    //create elements
+    var tr =  document.createElement('tr');
+    var tdi = document.createElement('td');
+    var tdlog = document.createElement('td');
+    var tddate = document.createElement('td');
+    var tdtime = document.createElement('td');
+   
+    
+    
+    //put values on the elements
+    tdi.textContent = i+1;
+    tdlog.textContent = response[i].LOG;
+    tddate.textContent = response[i].DATE;
+    tdtime.textContent = response[i].TIME;
+   
+
+    //tds to tr
+
+    tr.appendChild(tdi);
+    tr.appendChild(tdlog);
+    tr.appendChild(tddate);
+    tr.appendChild(tdtime);
+  
+
+    //append tr to tbody
+    detailsbody.appendChild(tr);
+}
+
+}
